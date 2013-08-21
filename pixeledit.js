@@ -62,11 +62,6 @@ var arrow = {
 };
 
 //Begin pixeledit
-window.onload = function(){
-	canvas = document.getElementById("canvas");
-	ctx = canvas.getContext('2d');
-	start();
-}
 function pxImg(w, h){
 	this.colors = [];
 	this.pxmap = [];
@@ -80,14 +75,17 @@ function pxImg(w, h){
 	}
 }
 
+function renderAll(pxmaptarget){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawui();
+	drawPxMap(pxmaptarget);
+	drawImgFrame();
+}
 function start(){
 	currentColor = "#FF9100";
 	currentTool = 0;
 	img = new pxImg(25, 25);
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	drawui();
-	drawPxMap(img);
-	drawImgFrame();
+	renderAll(img);
 }
 
 function drawui(){
@@ -145,17 +143,11 @@ function addPx(x, y){
 	    		img.pxmap[gridY][gridX] = img.colors.length-1;
 	    	}
 	    	
-	    	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    	drawPxMap(img);
-	    	drawImgFrame();
-	    	drawui();
+			renderAll(img);
 	    break;
 	    case 1:	//Eraser?
 	    	img.pxmap[gridY][gridX] = -1;
-	    	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    	drawPxMap(img);
-	    	drawImgFrame();
-	    	drawui();
+	    	renderAll(img);
 	    break;
 	}
 }
@@ -201,13 +193,13 @@ function detectClickIntent(x, y){
 		else if(y>40 && y<150){
 			currentTool = 1;
 		} 
-		drawui();
+		renderAll(img);
 	}
 	else if(x<80 && y>320){	//color picker
 	
 		currentColor = prompt("Color?");
 		if(currentColor != ""){
-			drawui();
+			renderAll(img);
 		}
 		else {
 			alert("no color defined");
@@ -224,6 +216,12 @@ function Clicked(){
         y = event.pageY - canvas.offsetTop;
         //alert(x + ", " + y);
         detectClickIntent(x, y);
+}
+
+window.onload = function(){
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext('2d');
+	start();
 }
 
 function exportImg(eimg){	//Export to a js string object
