@@ -1,7 +1,7 @@
 PixelEdit
 =========
 
-An html5 canvas pixel editor, for html5 canvas.
+An html5 canvas pixel editor, for html5 canvas. Renders your pixel art as javascript objects. Easier and better than using pngs.
 
 Usage
 -----
