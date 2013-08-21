@@ -1,7 +1,6 @@
 var canvas;
 var ctx;
-var imgs = [];
-var cur;
+var img;
 
 var currentColor = "#FF9933";
 var currentTool = 0;
@@ -27,9 +26,10 @@ function pxImg(w, h){
 }
 
 function start(){
-	imgs.push(new pxImg(25, 25));
-	cur = imgs.length-1;
+	img = new pxImg(25, 25);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawui();
+	drawPxMap();
 	drawImgFrame();
 }
 
@@ -50,31 +50,31 @@ function drawui(){
 function drawImgFrame(){
 	//Make the frame
 	ctx.beginPath();
-	ctx.rect(80, 0, imgs[cur].width*15, imgs[cur].height*15);
+	ctx.rect(80, 0, img.width*15, img.height*15);
 	ctx.lineWidth = .5;
 	ctx.strokeStyle = "#000000";
 	ctx.stroke();
 	//Make the vertical pixel borders
-	for(var x=0; x<imgs[cur].width; x++){
+	for(var x=0; x<img.width; x++){
 		ctx.beginPath();
 		ctx.moveTo((x*15)+80, 0);
-		ctx.lineTo((x*15)+80, imgs[cur].height*15);
+		ctx.lineTo((x*15)+80, img.height*15);
 		ctx.stroke();
 	}
 	//Make the horizontal pixel borders
-	for(var y=0; y<imgs[cur].height; y++){
+	for(var y=0; y<img.height; y++){
 		ctx.beginPath();
 		ctx.moveTo(80, (y*15));
-		ctx.lineTo((imgs[cur].width*15)+80, (y*15));
+		ctx.lineTo((img.width*15)+80, (y*15));
 		ctx.stroke();
 	}
 }
 
 function drawPxMap(){
-	for(var y=0; y<imgs[cur].pxmap.length; y++){
-		for(var x=0; x<imgs[cur].pxmap[y].length; x++){
-			if(imgs[cur].pxmap[y][x] != "a"){	//if not transparent
-				ctx.fillStyle = imgs[cur].colors[imgs[cur].pxmap[y][x]];
+	for(var y=0; y<img.pxmap.length; y++){
+		for(var x=0; x<img.pxmap[y].length; x++){
+			if(img.pxmap[y][x] != "a"){	//if not transparent
+				ctx.fillStyle = img.colors[img.pxmap[y][x]];
 				ctx.fillRect((x*15)+80,y*15,15, 15);
 			}
 		}
@@ -99,8 +99,8 @@ function detectClickIntent(x, y){
 		//get square mouse is on
 		var gridMouseX = x-80;
 		var gridMouseY = y;
-		var gridLength = imgs[cur].width * 15;
-		var gridHeight = imgs[cur].height * 15;
+		var gridLength = img.width * 15;
+		var gridHeight = img.height * 15;
 		
 		gridX = Math.floor(gridMouseX/15);
 		gridY = Math.floor(gridMouseY/15);
@@ -108,15 +108,15 @@ function detectClickIntent(x, y){
 		switch (currentTool){	//what do they want to do with the grid
 			case 0:	//Pencil?
 				var exist  = false;
-				for(var f=0; f<imgs[cur].colors.length; f++){
-					if(imgs[cur].colors[f] == currentColor){
+				for(var f=0; f<img.colors.length; f++){
+					if(img.colors[f] == currentColor){
 						exist = true;
-						imgs[cur].pxmap[gridY][gridX] = f;
+						img.pxmap[gridY][gridX] = f;
 					}
 				}
 				if(exist == false){
-					imgs[cur].colors.push(currentColor);
-					imgs[cur].pxmap[gridY][gridX] = imgs[cur].colors.length-1;
+					img.colors.push(currentColor);
+					img.pxmap[gridY][gridX] = img.colors.length-1;
 				}
 				
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -125,7 +125,7 @@ function detectClickIntent(x, y){
 				drawui();
 			break;
 			case 1:	//Eraser?
-				imgs[cur].pxmap[gridY][gridX] = "a";
+				img.pxmap[gridY][gridX] = "a";
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				drawPxMap();
 				drawImgFrame();
