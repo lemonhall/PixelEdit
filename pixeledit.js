@@ -3,7 +3,8 @@ var ctx;
 var imgs = [];
 var cur;
 
-var currentcolor = "#FF9933";
+var currentColor = "#FF9933";
+var currentTool = 0;
 
 window.onload = function(){
 	canvas = document.getElementById("canvas");
@@ -42,7 +43,7 @@ function drawui(){
 	ctx.fillStyle = "#ebebeb";	//Left toolbar
 	ctx.fillRect(0, 0, 80, canvas.height-80);
 	
-	ctx.fillStyle = currentcolor;	//bottom corner
+	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
 }
 
@@ -72,7 +73,7 @@ function drawImgFrame(){
 function drawPxMap(){
 	for(var y=0; y<imgs[cur].pxmap.length; y++){
 		for(var x=0; x<imgs[cur].pxmap[y].length; x++){
-			if(imgs[cur].pxmap[y][x] != "a"){
+			if(imgs[cur].pxmap[y][x] != "a"){	//if not transparent
 				ctx.fillStyle = imgs[cur].colors[imgs[cur].pxmap[y][x]];
 				ctx.fillRect((x*15)+80,y*15,15, 15);
 			}
@@ -82,19 +83,19 @@ function drawPxMap(){
 
 function detectClickIntent(x, y){
 	if(x<80 && y<320){	//Left toolbar
-		alert("left");
+		currentTool = +prompt("tool? 0=pencil, 1=eraser");
 	}
-	else if(x<80 && y>320){	//Left Bottom Corner
+	else if(x<80 && y>320){	//color picker
 	
-		currentcolor = prompt("Color?");
-		if(currentcolor != ""){
+		currentColor = prompt("Color?");
+		if(currentColor != ""){
 			drawui();
 		}
 		else {
 			alert("no color defined");
 		}
 	}
-	else {
+	else if (x>80 && y<canvas.height-80){	//grid
 		//get square mouse is on
 		var gridMouseX = x-80;
 		var gridMouseY = y;
@@ -103,23 +104,34 @@ function detectClickIntent(x, y){
 		
 		gridX = Math.floor(gridMouseX/15);
 		gridY = Math.floor(gridMouseY/15);
-		//Add to colors list and pxmap
-		var exist  = false;
-		for(var f=0; f<imgs[cur].colors.length; f++){
-			if(imgs[cur].colors[f] == currentcolor){
-				exist = true;
-				imgs[cur].pxmap[gridY][gridX] = f;
-			}
-		}
-		if(exist == false){
-			imgs[cur].colors.push(currentcolor);
-			imgs[cur].pxmap[gridY][gridX] = imgs[cur].colors.length-1;
-		}
 		
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		drawPxMap();
-		drawImgFrame();
-		drawui();
+		switch (currentTool){	//what do they want to do with the grid
+			case 0:	//Pencil?
+				var exist  = false;
+				for(var f=0; f<imgs[cur].colors.length; f++){
+					if(imgs[cur].colors[f] == currentColor){
+						exist = true;
+						imgs[cur].pxmap[gridY][gridX] = f;
+					}
+				}
+				if(exist == false){
+					imgs[cur].colors.push(currentColor);
+					imgs[cur].pxmap[gridY][gridX] = imgs[cur].colors.length-1;
+				}
+				
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				drawPxMap();
+				drawImgFrame();
+				drawui();
+			break;
+			case 1:	//Eraser?
+				imgs[cur].pxmap[gridY][gridX] = "a";
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				drawPxMap();
+				drawImgFrame();
+				drawui();
+			break;
+		}	
 	}
 }
 
