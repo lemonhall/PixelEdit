@@ -101,7 +101,14 @@ function drawui(){
 	ctx.fillRect(0, 0, 80, canvas.height-80);
 		drawSpr(pencil, 25, 20, 3);			//and its tools
 		drawSpr(eraser, 15, 110, 3);
-	
+		switch (currentTool){	//arrow selector indication
+			case 0:
+				drawSpr(arrow, 32, 83, 2);
+			break;
+			case 1:
+				drawSpr(arrow, 32, 145, 2);
+			break;
+		}
 	
 	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
@@ -196,6 +203,7 @@ function detectClickIntent(x, y){
 		else if(y>40 && y<150){
 			currentTool = 1;
 		} 
+		drawui();
 	}
 	else if(x<80 && y>320){	//color picker
 	
@@ -216,7 +224,7 @@ function Clicked(){
 	    var event = event || window.event,
 	    x = event.pageX - canvas.offsetLeft,
         y = event.pageY - canvas.offsetTop;
-        alert(x + ", " + y);
+        //alert(x + ", " + y);
         detectClickIntent(x, y);
 }
 
