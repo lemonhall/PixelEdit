@@ -91,8 +91,6 @@ function start(){
 }
 
 function drawui(){
-	ctx.clearRect(0, 0, 80, canvas.height);	//Clear left
-	ctx.clearRect(80, canvas.height-80, canvas.width-80, 80);	//Clear bot
 	
 	ctx.fillStyle = "#ebebeb";	//bottom toolbar
 	ctx.fillRect(80, canvas.height-80, canvas.width-80, 80);
