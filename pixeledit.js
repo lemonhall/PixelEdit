@@ -1,6 +1,7 @@
 var canvas;
 var ctx;
 var img;
+var msdwn = false;
 
 var currentColor;
 var currentTool;
@@ -210,19 +211,32 @@ function detectClickIntent(x, y){
 	}
 }
 
-function Clicked(){
+canvas.onmousedown = function(){
+		msdwn = true;
 	    var event = event || window.event,
 	    x = event.pageX - canvas.offsetLeft,
         y = event.pageY - canvas.offsetTop;
         //alert(x + ", " + y);
         detectClickIntent(x, y);
 }
-
-window.onload = function(){
-	canvas = document.getElementById("canvas");
-	ctx = canvas.getContext('2d');
-	start();
+canvas.onmouseup = function(){
+	msdwn = false;
 }
+canvas.onmousemove = function(){
+	if(msdwn == true){
+	    var event = event || window.event,
+	    x = event.pageX - canvas.offsetLeft,
+        y = event.pageY - canvas.offsetTop;
+        //alert(x + ", " + y);
+        detectClickIntent(x, y);	
+      }
+}
+
+
+canvas = document.getElementById("canvas");
+ctx = canvas.getContext('2d');
+start();
+
 
 function exportImg(eimg){	//Export to a js string object
 	var exported = "";	
