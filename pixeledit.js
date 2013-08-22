@@ -61,7 +61,16 @@ var arrow = {
         [0, 0, 0, 0, 0]
     ]
 };
-
+var colorspick = {
+    width: 10,
+    height: 3,
+    colors: ["#FF6666", "#FF0000", "#990000", "#CC0000", "#66FF33", "#FFCC00", "#FF9933", "#FF6600", "#CC6600", "#CC9900", "#FFFF00", "#003300", "#009933", "#33CC33", "#FFFFFF", "#000000", "#000099", "#0000FF", "#66CCFF", "#000066", "#003399", "#0066CC", "#660066", "#993399", "#CC00CC", "#999999", "#3D3D3D", "#B1B1B1", "#D0D0D0", "#E8E8E8", "#800000", "#663300", "#855C33", "#C2AE99"],
+    pxmap: [
+        [27, 14, 0, 5, 10, 13, 18, 21, 24, 33],
+        [26, 29, 1, 7, 5, 12, 17, 20, 23, 32],
+        [15, 28, 30, 8, 9, 11, 16, 19, 22, 31]
+    ]
+};
 //Begin pixeledit
 
 
@@ -115,6 +124,7 @@ function drawui(){
 	
 	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
+	drawSpr(colorspick, 80, canvas.height-80, 27);	//color picker
 }
 function drawSpr(sprt, x, y, sz){	//draws pixeledit sprites
 	for(var ly=0; ly<sprt.height; ly++){
@@ -126,7 +136,7 @@ function drawSpr(sprt, x, y, sz){	//draws pixeledit sprites
 		}
 	}
 }
-function addPx(x, y){
+function addPx(x, y){	//if user wants to modify a pixel
 	//get square mouse is on
 	var gridMouseX = x-80;
 	var gridMouseY = y;
@@ -158,6 +168,17 @@ function addPx(x, y){
 	    break;
 	}
 }
+function switchColor(x, y){		//if user selects color from color picker
+	var gridMouseX = x-80;
+	var gridMouseY = y - (canvas.height-80);
+	var gridLength = colorspick.width * 27;
+	var gridHeight = colorspick.height * 27;
+	
+	gridX = Math.floor(gridMouseX/27);
+	gridY = Math.floor(gridMouseY/27);
+	currentColor = colorspick.colors[colorspick.pxmap[gridY][gridX]];
+	renderAll(img);
+}
 function drawImgFrame(){
 	//Make the frame
 	ctx.beginPath();
@@ -186,7 +207,7 @@ function drawPxMap(px){
 		for(var x=0; x<px.pxmap[y].length; x++){
 			if(px.pxmap[y][x] != -1){	//if not transparent
 				ctx.fillStyle = px.colors[px.pxmap[y][x]];
-				ctx.fillRect((x*15)+80,y*15,15, 15);
+				ctx.fillRect((x*15)+80,y*15,15,15);
 			}
 		}
 	}
@@ -202,7 +223,7 @@ function detectClickIntent(x, y){
 		} 
 		renderAll(img);
 	}
-	else if(x<80 && y>320){	//color picker
+	else if(x<80 && y>canvas.height-80){	//color picker
 	
 		currentColor = prompt("Color?");
 		if(currentColor != ""){
@@ -211,6 +232,10 @@ function detectClickIntent(x, y){
 		else {
 			alert("no color defined");
 		}
+	}
+	else if (x>80 && y>canvas.height-80){	//color index
+		renderAll(img);
+		switchColor(x, y);
 	}
 	else if (x>80 && y<canvas.height-80){	//grid
 		addPx(x, y);
