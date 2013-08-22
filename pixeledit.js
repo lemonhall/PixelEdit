@@ -176,6 +176,7 @@ function switchColor(x, y){		//if user selects color from color picker
 	
 	gridX = Math.floor(gridMouseX/27);
 	gridY = Math.floor(gridMouseY/27);
+	currentTool = 0; //sets back to pencil because intention is to draw more
 	currentColor = colorspick.colors[colorspick.pxmap[gridY][gridX]];
 	renderAll(img);
 }
