@@ -63,6 +63,12 @@ var arrow = {
 };
 
 //Begin pixeledit
+
+
+
+canvas = document.getElementById("canvas");
+ctx = canvas.getContext('2d');
+start();
 function pxImg(w, h){
 	this.colors = [];
 	this.pxmap = [];
@@ -231,11 +237,6 @@ canvas.onmousemove = function(){
         detectClickIntent(x, y);	
       }
 }
-
-
-canvas = document.getElementById("canvas");
-ctx = canvas.getContext('2d');
-start();
 
 
 function exportImg(eimg){	//Export to a js string object
