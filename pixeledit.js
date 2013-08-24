@@ -225,13 +225,14 @@ function detectClickIntent(x, y){
 		renderAll(img);
 	}
 	else if(x<80 && y>canvas.height-80){	//color picker
-	
+		var prevColor = currentColor;
 		currentColor = prompt("Color?");
 		if(currentColor != ""){
 			renderAll(img);
 		}
 		else {
 			alert("no color defined");
+			currentColor = prevColor;
 		}
 	}
 	else if (x>80 && y>canvas.height-80){	//color index
