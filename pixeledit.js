@@ -75,7 +75,7 @@ pxmap: [
 [0, -1, -1, -1, -1, -1, 0],
 [0, 0, 0, 0, 0, 0, 0]
 ]};
-var newbtn = { 
+var newbtn = {
 width: 7, 
 height: 9,
 colors: ["#3D3D3D", "#FF6600"],
@@ -125,7 +125,7 @@ function renderAll(pxmaptarget){
 }
 function start(){
 	document.getElementById("exported").style.visibility =  "hidden";
-	currentColor = "#FF3300";
+	currentColor = "#009933";
 	currentTool = 0;
 	img = new pxImg(25, 25);
 	renderAll(img);
