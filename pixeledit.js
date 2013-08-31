@@ -72,9 +72,6 @@ var colorspick = {
     ]
 };
 //Begin pixeledit
-
-
-
 canvas = document.getElementById("canvas");
 ctx = canvas.getContext('2d');
 start();
@@ -126,6 +123,25 @@ function drawui(){
 	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
 	drawSpr(colorspick, 80, canvas.height-80, 27);	//color picker
+	
+	ctx.fillStyle = "#ebebeb";	//Right toolbar
+	ctx.fillRect(canvas.width-80, 0, 80, canvas.height-80);
+	
+	
+	ctx.fillStyle = "#000000";	//draw preview 1x
+	ctx.font = "bold 10px sans-serif";
+	ctx.fillText("2x", canvas.width-48, canvas.height-235);
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(canvas.width-67, canvas.height-230, 50, 50);
+	drawSpr(img, canvas.width-67, canvas.height-230, 2);	
+	
+	
+	ctx.fillStyle = "#000000";	//draw preview 3x
+	ctx.font = "bold 10px sans-serif";
+	ctx.fillText("3x", canvas.width-48, canvas.height-165);
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(canvas.width-77, canvas.height-160, 75, 75);
+	drawSpr(img, canvas.width-77, canvas.height-160, 3);
 }
 function drawSpr(sprt, x, y, sz){	//draws pixeledit sprites
 	for(var ly=0; ly<sprt.height; ly++){
@@ -240,7 +256,7 @@ function detectClickIntent(x, y){
 		renderAll(img);
 		switchColor(x, y);
 	}
-	else if (x>80 && y<canvas.height-80){	//grid
+	else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
 		addPx(x, y);
 	}
 }
