@@ -1,6 +1,9 @@
 ![PixelEdit Screenshot](screenshot.png)
 
+I created this because I was tired of using pngs in my html5 games.
+
 An html5 canvas pixel editor, for html5 canvas. Renders your pixel art as javascript objects. Easier and better than using pngs.
+
 
 Usage
 -----
