@@ -299,5 +299,5 @@ function exportImg(eimg){	//Export to a js string object
 		}
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
-	console.log(exported);
+	document.getElementById("exported").innerHTML = exported;
 }
