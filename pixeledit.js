@@ -99,6 +99,7 @@ function renderAll(pxmaptarget){
 }
 function start(){
 	currentColor = "#FF9100";
+	document.getElementById("exported").innerHTML = "Exported output";
 	currentTool = 0;
 	img = new pxImg(25, 25);
 	renderAll(img);
