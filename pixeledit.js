@@ -269,7 +269,7 @@ canvas.onmousemove = function(){
 
 function exportImg(eimg){	//Export to a js string object
 	var exported = "";	
-	exported = "var img = { width:" + eimg.width + ", height: " + eimg.height + ", ";	//initial properties
+	exported = "var img = { <br>width: " + eimg.width + ", <br>height: " + eimg.height + ",<br> ";	//initial properties
 	var ecolors = "[";	//add colors
 	for(var x=0; x<eimg.colors.length; x++){
 		ecolors = ecolors + '"';
@@ -280,8 +280,8 @@ function exportImg(eimg){	//Export to a js string object
 			ecolors = ecolors + eimg.colors[x] + '"]';
 		}
 	}
-	exported = exported + "colors: " + ecolors + ", ";
-	var epxmap = "[";
+	exported = exported + "colors: " + ecolors + ",<br> ";
+	var epxmap = "[<br>";
 	for(var y=0; y<eimg.height; y++){	//pxmap arr
 		epxmap = epxmap + "[";
 		for(var x=0; x<eimg.width; x++){
@@ -293,10 +293,10 @@ function exportImg(eimg){	//Export to a js string object
 			}			
 		}
 		if(y != eimg.height-1){	//if not finished
-			epxmap = epxmap + ", ";
+			epxmap = epxmap + ",<br> ";
 		}
 		else {
-			epxmap = epxmap + "]";	//if finished close pxmap
+			epxmap = epxmap + "<br>]";	//if finished close pxmap
 		}
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
