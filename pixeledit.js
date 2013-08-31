@@ -61,6 +61,35 @@ var arrow = {
         [0, 0, 0, 0, 0]
     ]
 };
+var exportbtn = { 
+width: 7, 
+height: 8,
+colors: ["#3D3D3D", "#009933"],
+pxmap: [
+[-1, -1, -1, 1, -1, -1, -1],
+[-1, -1, 1, 1, 1, -1, -1],
+[-1, 1, 1, 1, 1, 1, -1],
+[-1, -1, -1, 1, -1, -1, -1],
+[0, -1, -1, 1, -1, -1, 0],
+[0, -1, -1, 1, -1, -1, 0],
+[0, -1, -1, -1, -1, -1, 0],
+[0, 0, 0, 0, 0, 0, 0]
+]};
+var newbtn = { 
+width: 7, 
+height: 9,
+colors: ["#3D3D3D", "#FF6600"],
+pxmap: [
+[-1, -1, -1, -1, -1, 1, -1],
+[0, 0, 0, 0, 1, 1, 1],
+[0, -1, -1, -1, -1, 1, -1],
+[0, -1, -1, -1, -1, 0, -1],
+[0, -1, -1, -1, -1, 0, -1],
+[0, -1, -1, -1, -1, 0, -1],
+[0, -1, -1, -1, -1, 0, -1],
+[0, -1, -1, -1, -1, 0, -1],
+[0, 0, 0, 0, 0, 0, -1]
+]};
 var colorspick = {
     width: 10,
     height: 3,
@@ -95,8 +124,8 @@ function renderAll(pxmaptarget){
 	drawImgFrame();
 }
 function start(){
-	currentColor = "#FF9100";
-	document.getElementById("exported").innerHTML = "Exported output";
+	document.getElementById("exported").style.visibility =  "hidden";
+	currentColor = "#FF3300";
 	currentTool = 0;
 	img = new pxImg(25, 25);
 	renderAll(img);
@@ -106,7 +135,7 @@ function drawui(){
 	
 	ctx.fillStyle = "#ebebeb";	//bottom toolbar
 	ctx.fillRect(80, canvas.height-80, canvas.width-80, 80);
-	
+		
 	ctx.fillStyle = "#ebebeb";	//Left toolbar
 	ctx.fillRect(0, 0, 80, canvas.height-80);
 		drawSpr(pencil, 25, 20, 3);			//and its tools
@@ -127,14 +156,12 @@ function drawui(){
 	ctx.fillStyle = "#ebebeb";	//Right toolbar
 	ctx.fillRect(canvas.width-80, 0, 80, canvas.height-80);
 	
-	
-	ctx.fillStyle = "#000000";	//draw preview 1x
+	ctx.fillStyle = "#000000";	//draw preview 2x
 	ctx.font = "bold 10px sans-serif";
 	ctx.fillText("2x", canvas.width-48, canvas.height-235);
 	ctx.fillStyle = "#FFFFFF";
 	ctx.fillRect(canvas.width-67, canvas.height-230, 50, 50);
 	drawSpr(img, canvas.width-67, canvas.height-230, 2);	
-	
 	
 	ctx.fillStyle = "#000000";	//draw preview 3x
 	ctx.font = "bold 10px sans-serif";
@@ -142,6 +169,14 @@ function drawui(){
 	ctx.fillStyle = "#FFFFFF";
 	ctx.fillRect(canvas.width-77, canvas.height-160, 75, 75);
 	drawSpr(img, canvas.width-77, canvas.height-160, 3);
+	
+	drawSpr(newbtn, canvas.width-53, 23, 4);	//draw new btn
+	drawSpr(exportbtn, canvas.width-54, 75, 4);	//draw export btn
+	
+	ctx.fillStyle = "#666666";	//draw logo
+	ctx.font = "bold 15px 'Press Start 2P',sans-serif";
+	ctx.fillText("Pixel", canvas.width-80, canvas.height-25);
+	ctx.fillText("Edit", canvas.width-65, canvas.height-5);
 }
 function drawSpr(sprt, x, y, sz){	//draws pixeledit sprites
 	for(var ly=0; ly<sprt.height; ly++){
@@ -252,9 +287,17 @@ function detectClickIntent(x, y){
 			currentColor = prevColor;
 		}
 	}
-	else if (x>80 && y>canvas.height-80){	//color index
+	else if (x>80 && x<350 && y>canvas.height-80){	//color index
 		renderAll(img);
 		switchColor(x, y);
+	}
+	else if(x>canvas.width-80){
+		if(y<65){
+			start();
+		}
+		else if(y>70 && y<120){
+			exportImg(img);
+		}
 	}
 	else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
 		addPx(x, y);
@@ -316,5 +359,6 @@ function exportImg(eimg){	//Export to a js string object
 		}
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
+	document.getElementById("exported").style.visibility = "visible";
 	document.getElementById("exported").innerHTML = exported;
 }
