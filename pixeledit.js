@@ -2,6 +2,7 @@ var canvas;
 var ctx;
 var img;
 var msdwn = false;
+var msmvd = false;
 
 var currentColor;
 var currentTool;
@@ -61,6 +62,30 @@ var arrow = {
         [0, 0, 0, 0, 0]
     ]
 };
+var undobtn = {
+	width: 8, 
+	height: 6,
+	colors: ["#003399"],
+	pxmap: [
+		[-1, -1, 0, 0, 0, 0, 0, 0],
+		[-1, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[-1, 0, 0, 0, 0, 0, 0, 0],
+		[-1, -1, 0, 0, 0, 0, 0, 0]
+]};
+var redobtn = {
+	width: 8, 
+	height: 6,
+	colors: ["#003399", "#009933"],
+	pxmap: [
+		[1, 1, 1, 1, 1, 1, -1, -1],
+		[1, 1, 1, 1, 1, 1, 1, -1],
+		[1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, -1],
+		[1, 1, 1, 1, 1, 1, -1, -1]
+]};
 var exportbtn = { 
 width: 7, 
 height: 8,
@@ -124,9 +149,10 @@ function renderAll(pxmaptarget){
 	drawImgFrame();
 }
 function start(){
-	document.getElementById("exported").style.visibility =  "hidden";
+	document.getElementById("exports").style.visibility =  "hidden";
 	currentColor = "#009933";
 	currentTool = 0;
+	snapshots = [];
 	img = new pxImg(25, 25);
 	renderAll(img);
 }
@@ -148,7 +174,8 @@ function drawui(){
 				drawSpr(arrow, 32, 145, 2);
 			break;
 		}
-	
+	drawSpr(undobtn, 20, 170, 4);
+	drawSpr(redobtn, 25, 210, 4);
 	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
 	drawSpr(colorspick, 80, canvas.height-80, 27);	//color picker
@@ -267,40 +294,47 @@ function drawPxMap(px){
 }
 
 function detectClickIntent(x, y){
-	if(x<80 && y<320){	//Left toolbar
-		if(y<90){
-			currentTool = 0;
-		}
-		else if(y>40 && y<150){
-			currentTool = 1;
-		} 
-		renderAll(img);
-	}
-	else if(x<80 && y>canvas.height-80){	//color picker
-		var prevColor = currentColor;
-		currentColor = prompt("Color?");
-		if(currentColor != ""){
+	if(msmvd == false){
+		if(x<80 && y<320){	//Left toolbar
+			if(y<90){
+				currentTool = 0;
+			}
+			else if(y>40 && y<150){
+				currentTool = 1;
+			} 
 			renderAll(img);
 		}
-		else {
-			alert("no color defined");
-			currentColor = prevColor;
+		else if(x<80 && y>canvas.height-80){	//color picker
+			var prevColor = currentColor;
+			currentColor = prompt("Color?");
+			if(currentColor != ""){
+				renderAll(img);
+			}
+			else {
+				alert("no color defined");
+				currentColor = prevColor;
+			}
 		}
-	}
-	else if (x>80 && x<350 && y>canvas.height-80){	//color index
-		renderAll(img);
-		switchColor(x, y);
-	}
-	else if(x>canvas.width-80){
-		if(y<65){
-			start();
+		else if (x>80 && x<350 && y>canvas.height-80){	//color index
+			renderAll(img);
+			switchColor(x, y);
 		}
-		else if(y>70 && y<120){
-			exportImg(img);
+		else if(x>canvas.width-80){
+			if(y<65){
+				start();
+			}
+			else if(y>70 && y<120){
+				exportImg(img);
+			}
 		}
+		else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
+			addPx(x, y);
+		}			
 	}
-	else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
-		addPx(x, y);
+	else {
+		if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
+			addPx(x, y);
+		}
 	}
 }
 
@@ -309,7 +343,7 @@ canvas.onmousedown = function(){
 	    var event = event || window.event,
 	    x = event.pageX - canvas.offsetLeft,
         y = event.pageY - canvas.offsetTop;
-        //alert(x + ", " + y);
+        msmvd = false;
         detectClickIntent(x, y);
 }
 canvas.onmouseup = function(){
@@ -320,8 +354,8 @@ canvas.onmousemove = function(){
 	    var event = event || window.event,
 	    x = event.pageX - canvas.offsetLeft,
         y = event.pageY - canvas.offsetTop;
-        //alert(x + ", " + y);
-        detectClickIntent(x, y);	
+        msmvd = true;
+        detectClickIntent(x, y);
       }
 }
 
@@ -359,6 +393,6 @@ function exportImg(eimg){	//Export to a js string object
 		}
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
-	document.getElementById("exported").style.visibility = "visible";
-	document.getElementById("exported").innerHTML = exported;
+	document.getElementById("exports").style.visibility = "visible";
+	document.getElementById("exports").innerHTML = exported;
 }

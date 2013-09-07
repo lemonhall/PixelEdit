@@ -3,11 +3,22 @@
 <head>
 	<title>PixelEdit</title>
 	<link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+	<style>
+		.exported {
+			border: 1px solid black; 
+			width: 515px; 
+			padding: 10px; 
+			font-size: 12px; 
+			font-family: sans-serif;
+			margin-top: 5px;
+		}
+	</style>
 </head>
 <body>
 	<div id="pixeledit">
 		<canvas id="canvas" width="535" height="455" style="border: 1px solid black"></canvas>
-		<div id="exported" style="border: 1px solid black; width: 515px; padding: 10px; font-size: 12px; font-family: sans-serif"></div>
+		
+		<div id="exports" class="exported"></div>
 	</div>
 	<script src="pixeledit.js"></script>
 </body>
