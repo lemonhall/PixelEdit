@@ -6,6 +6,9 @@ var msmvd = false;
 
 var currentColor;
 var currentTool;
+var snapshots = [];
+var snapshotsIndex = 0;
+var snapshot;
 
 //Tools sprites (made in PixelEdit!!)
 var pencil = {
@@ -87,33 +90,33 @@ var redobtn = {
 		[1, 1, 1, 1, 1, 1, -1, -1]
 ]};
 var exportbtn = { 
-width: 7, 
-height: 8,
-colors: ["#3D3D3D", "#009933"],
-pxmap: [
-[-1, -1, -1, 1, -1, -1, -1],
-[-1, -1, 1, 1, 1, -1, -1],
-[-1, 1, 1, 1, 1, 1, -1],
-[-1, -1, -1, 1, -1, -1, -1],
-[0, -1, -1, 1, -1, -1, 0],
-[0, -1, -1, 1, -1, -1, 0],
-[0, -1, -1, -1, -1, -1, 0],
-[0, 0, 0, 0, 0, 0, 0]
-]};
+	width: 7, 
+	height: 8,
+	colors: ["#3D3D3D", "#009933"],
+	pxmap: [
+		[-1, -1, -1, 1, -1, -1, -1],
+		[-1, -1, 1, 1, 1, -1, -1],
+		[-1, 1, 1, 1, 1, 1, -1],
+		[-1, -1, -1, 1, -1, -1, -1],
+		[0, -1, -1, 1, -1, -1, 0],
+		[0, -1, -1, 1, -1, -1, 0],
+		[0, -1, -1, -1, -1, -1, 0],
+		[0, 0, 0, 0, 0, 0, 0]
+	]};
 var newbtn = {
-width: 7, 
-height: 9,
-colors: ["#3D3D3D", "#FF6600"],
-pxmap: [
-[-1, -1, -1, -1, -1, 1, -1],
-[0, 0, 0, 0, 1, 1, 1],
-[0, -1, -1, -1, -1, 1, -1],
-[0, -1, -1, -1, -1, 0, -1],
-[0, -1, -1, -1, -1, 0, -1],
-[0, -1, -1, -1, -1, 0, -1],
-[0, -1, -1, -1, -1, 0, -1],
-[0, -1, -1, -1, -1, 0, -1],
-[0, 0, 0, 0, 0, 0, -1]
+	width: 7, 
+	height: 9,
+	colors: ["#3D3D3D", "#FF6600"],
+	pxmap: [
+		[-1, -1, -1, -1, -1, 1, -1],
+		[0, 0, 0, 0, 1, 1, 1],
+		[0, -1, -1, -1, -1, 1, -1],
+		[0, -1, -1, -1, -1, 0, -1],
+		[0, -1, -1, -1, -1, 0, -1],
+		[0, -1, -1, -1, -1, 0, -1],
+		[0, -1, -1, -1, -1, 0, -1],
+		[0, -1, -1, -1, -1, 0, -1],
+		[0, 0, 0, 0, 0, 0, -1]
 ]};
 var colorspick = {
     width: 10,
@@ -152,11 +155,27 @@ function start(){
 	document.getElementById("exports").style.visibility =  "hidden";
 	currentColor = "#009933";
 	currentTool = 0;
-	snapshots = [];
 	img = new pxImg(25, 25);
+	
+	snapshots.push(JSON.parse(JSON.stringify(img)));
 	renderAll(img);
 }
-
+function undo(){
+		if(snapshotsIndex > 0){
+			snapshotsIndex--;
+			img = snapshots[snapshotsIndex];
+			console.log("undid");
+		}
+	renderAll(img);
+}
+function redo(){
+		if(snapshotsIndex < snapshots.length-1){
+			snapshotsIndex++;
+			img = snapshots[snapshotsIndex];
+			console.log("redid");			
+		}
+	renderAll(img);
+}
 function drawui(){
 	
 	ctx.fillStyle = "#ebebeb";	//bottom toolbar
@@ -301,7 +320,13 @@ function detectClickIntent(x, y){
 			}
 			else if(y>40 && y<150){
 				currentTool = 1;
-			} 
+			}
+			else if(y>170 && y<210){
+				undo();
+			}
+			else if(y>210 && y<240){
+				redo();
+			}
 			renderAll(img);
 		}
 		else if(x<80 && y>canvas.height-80){	//color picker
@@ -319,16 +344,20 @@ function detectClickIntent(x, y){
 			renderAll(img);
 			switchColor(x, y);
 		}
-		else if(x>canvas.width-80){
+		else if(x>canvas.width-80){	//right toolbar
 			if(y<65){
 				start();
 			}
 			else if(y>70 && y<120){
-				exportImg(img);
+				var exported = exportImg(img);
+				document.getElementById("exports").style.visibility = "visible";
+				document.getElementById("exports").innerHTML = exported;
 			}
 		}
 		else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
 			addPx(x, y);
+			snapshots.push(JSON.parse(JSON.stringify(img)));
+			snapshotsIndex = snapshots.length-1;
 		}			
 	}
 	else {
@@ -348,6 +377,10 @@ canvas.onmousedown = function(){
 }
 canvas.onmouseup = function(){
 	msdwn = false;
+	if(msmvd == true){
+		
+		snapshots.push(JSON.parse(JSON.stringify(img)));
+	}
 }
 canvas.onmousemove = function(){
 	if(msdwn == true){
@@ -393,6 +426,5 @@ function exportImg(eimg){	//Export to a js string object
 		}
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
-	document.getElementById("exports").style.visibility = "visible";
-	document.getElementById("exports").innerHTML = exported;
+	return exported;
 }
