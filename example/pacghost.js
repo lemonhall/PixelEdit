@@ -1,6 +1,4 @@
-var pacghost = { 
-width: 25, 
-height: 25,
+var pacghost = {
 colors: ["#FF0000", "#FFFFFF", "#003399", "#33CC33"],
 pxmap: [
 [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
