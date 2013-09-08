@@ -12,8 +12,6 @@ var snapshot;
 
 //Tools sprites (made in PixelEdit!!)
 var pencil = {
-    width: 8,
-    height: 20,
     colors: ["pink", "yellow", "#FFCF91", "black"],
     pxmap: [
         [-1, -1, -1, -1, -1, -1, -1, -1],
@@ -39,8 +37,6 @@ var pencil = {
     ]
 };
 var eraser = {
-    width: 15,
-    height: 10,
     colors: ["#FF94E4", "black"],
     pxmap: [
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1],
@@ -56,8 +52,6 @@ var eraser = {
     ]
 };
 var arrow = {
-    width: 5,
-    height: 3,
     colors: ["red"],
     pxmap: [
         [-1, -1, 0, -1, -1],
@@ -66,8 +60,6 @@ var arrow = {
     ]
 };
 var undobtn = {
-	width: 8, 
-	height: 6,
 	colors: ["#003399"],
 	pxmap: [
 		[-1, -1, 0, 0, 0, 0, 0, 0],
@@ -78,8 +70,6 @@ var undobtn = {
 		[-1, -1, 0, 0, 0, 0, 0, 0]
 ]};
 var redobtn = {
-	width: 8, 
-	height: 6,
 	colors: ["#003399", "#009933"],
 	pxmap: [
 		[1, 1, 1, 1, 1, 1, -1, -1],
@@ -89,9 +79,7 @@ var redobtn = {
 		[1, 1, 1, 1, 1, 1, 1, -1],
 		[1, 1, 1, 1, 1, 1, -1, -1]
 ]};
-var exportbtn = { 
-	width: 7, 
-	height: 8,
+var exportbtn = {
 	colors: ["#3D3D3D", "#009933"],
 	pxmap: [
 		[-1, -1, -1, 1, -1, -1, -1],
@@ -103,9 +91,7 @@ var exportbtn = {
 		[0, -1, -1, -1, -1, -1, 0],
 		[0, 0, 0, 0, 0, 0, 0]
 	]};
-var importbtn = { 
-	width: 7, 
-	height: 9,
+var importbtn = {
 	colors: ["#3D3D3D", "#009933", "#CC00CC"],
 	pxmap: [
 		[-1, -1, -1, 2, -1, -1, -1],
@@ -119,8 +105,6 @@ var importbtn = {
 		[0, 0, 0, 0, 0, 0, 0]
 ]};
 var newbtn = {
-	width: 7, 
-	height: 9,
 	colors: ["#3D3D3D", "#FF6600"],
 	pxmap: [
 		[-1, -1, -1, -1, -1, 1, -1],
@@ -134,8 +118,6 @@ var newbtn = {
 		[0, 0, 0, 0, 0, 0, -1]
 ]};
 var colorspick = {
-    width: 10,
-    height: 3,
     colors: ["#FF6666", "#FF0000", "#990000", "#CC0000", "#66FF33", "#FFCC00", "#FF9933", "#FF6600", "#CC6600", "#CC9900", "#FFFF00", "#003300", "#009933", "#33CC33", "#FFFFFF", "#000000", "#000099", "#0000FF", "#66CCFF", "#000066", "#003399", "#0066CC", "#660066", "#993399", "#CC00CC", "#999999", "#3D3D3D", "#B1B1B1", "#D0D0D0", "#E8E8E8", "#800000", "#663300", "#855C33", "#C2AE99", "#FFFF99"],
     pxmap: [
         [27, 14, 0, 5, 34, 13, 18, 21, 24, 33],
@@ -150,11 +132,9 @@ start();
 function pxImg(w, h){
 	this.colors = [];
 	this.pxmap = [];
-	this.width = w;
-	this.height = h;
-	for(var y=0; y<this.height; y++){
+	for(var y=0; y<h; y++){
 		this.pxmap.push([]);
-		for(var x=0; x<this.width; x++){
+		for(var x=0; x<w; x++){
 			this.pxmap[y].push(-1);
 		}
 	}
@@ -241,8 +221,8 @@ function drawui(){
 	ctx.fillText("Edit", canvas.width-65, canvas.height-5);
 }
 function drawSpr(sprt, x, y, sz){	//draws pixeledit sprites
-	for(var ly=0; ly<sprt.height; ly++){
-		for(var lx=0; lx<sprt.width; lx++){
+	for(var ly=0; ly<sprt.pxmap.length; ly++){
+		for(var lx=0; lx<sprt.pxmap[0].length; lx++){
 			if(sprt.pxmap[ly][lx] != -1){
 				ctx.fillStyle = sprt.colors[sprt.pxmap[ly][lx]];
 				ctx.fillRect(x + (lx*sz), y + (ly*sz), sz, sz);
@@ -254,8 +234,8 @@ function addPx(x, y){	//if user wants to modify a pixel
 	//get square mouse is on
 	var gridMouseX = x-80;
 	var gridMouseY = y;
-	var gridLength = img.width * 15;
-	var gridHeight = img.height * 15;
+	var gridLength = img.pxmap[0].length * 15;
+	var gridHeight = img.pxmap.length * 15;
 	
 	gridX = Math.floor(gridMouseX/15);
 	gridY = Math.floor(gridMouseY/15);
@@ -285,8 +265,8 @@ function addPx(x, y){	//if user wants to modify a pixel
 function switchColor(x, y){		//if user selects color from color picker
 	var gridMouseX = x-80;
 	var gridMouseY = y - (canvas.height-80);
-	var gridLength = colorspick.width * 27;
-	var gridHeight = colorspick.height * 27;
+	var gridLength = colorspick.pxmap[0].length * 27;
+	var gridHeight = colorspick.pxmap.length * 27;
 	
 	gridX = Math.floor(gridMouseX/27);
 	gridY = Math.floor(gridMouseY/27);
@@ -297,22 +277,22 @@ function switchColor(x, y){		//if user selects color from color picker
 function drawImgFrame(){
 	//Make the frame
 	ctx.beginPath();
-	ctx.rect(80, 0, img.width*15, img.height*15);
+	ctx.rect(80, 0, img.pxmap[0].length*15, img.pxmap.length*15);
 	ctx.lineWidth = .5;
 	ctx.strokeStyle = "#000000";
 	ctx.stroke();
 	//Make the vertical pixel borders
-	for(var x=0; x<img.width; x++){
+	for(var x=0; x<img.pxmap[0].length; x++){
 		ctx.beginPath();
 		ctx.moveTo((x*15)+80, 0);
-		ctx.lineTo((x*15)+80, img.height*15);
+		ctx.lineTo((x*15)+80, img.pxmap.length*15);
 		ctx.stroke();
 	}
 	//Make the horizontal pixel borders
-	for(var y=0; y<img.height; y++){
+	for(var y=0; y<img.pxmap.length; y++){
 		ctx.beginPath();
 		ctx.moveTo(80, (y*15));
-		ctx.lineTo((img.width*15)+80, (y*15));
+		ctx.lineTo((img.pxmap[0].length*15)+80, (y*15));
 		ctx.stroke();
 	}
 }
@@ -411,10 +391,33 @@ canvas.onmousemove = function(){
       }
 }
 
+/*function cleanUpImg(cimg){	//clean up unused colors
+	for(var y=0; y<cimg.pxmap.length; y++){
+		for(var x=0; x<cimg.pxmap[0].length; y++){
+			if(cimg.pxmap[y][x] != -1) cimg.pxmap[y][x] = cimg.colors[cimg.pxmap[y][x]];
+		}
+	}
+	cimg.colors = [];
+	for(var y=0; y<cimg.pxmap.length; y++){
+		for(var x=0; x<cimg.pxmap[0].length; y++){
+			var foundcolor = false;
+			for(var i=0; i<cimg.colors.length; i++){
+				if (cimg.colors[i] == cimg.pxmap[y][x]){
+					foundcolor = true;
+					cimg.pxmap[y][x] = i;
+				}
+			}
+			if (foundcolor == false){
+				cimg.colors.push(cimg.pxmap[y][x]);
+				cimg.pxmap[y][x] = cimg.colors.length-1;
+			}
+		}
+	}
+	return cimg;
+}*/
 
 function exportImg(eimg){	//Export to a js string object
-	var exported = "";	
-	exported = "var img = { <br>width: " + eimg.width + ", <br>height: " + eimg.height + ",<br> ";	//initial properties
+	var exported = "var img = {<br>";
 	var ecolors = "[";	//add colors
 	for(var x=0; x<eimg.colors.length; x++){
 		ecolors = ecolors + '"';
@@ -427,17 +430,17 @@ function exportImg(eimg){	//Export to a js string object
 	}
 	exported = exported + "colors: " + ecolors + ",<br> ";
 	var epxmap = "[<br>";
-	for(var y=0; y<eimg.height; y++){	//pxmap arr
+	for(var y=0; y<eimg.pxmap.length; y++){	//pxmap arr
 		epxmap = epxmap + "[";
-		for(var x=0; x<eimg.width; x++){
-			if(x != eimg.width-1){
+		for(var x=0; x<eimg.pxmap[0].length; x++){
+			if(x != eimg.pxmap[0].length-1){
 				epxmap = epxmap + eimg.pxmap[y][x] + ", ";	//if not finished add comma
 			}
 			else {
 				epxmap = epxmap  + eimg.pxmap[y][x]+ "]";		//if finished close pxmap[y]
 			}			
 		}
-		if(y != eimg.height-1){	//if not finished
+		if(y != eimg.pxmap.length-1){	//if not finished
 			epxmap = epxmap + ",<br> ";
 		}
 		else {
