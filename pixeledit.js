@@ -103,6 +103,21 @@ var exportbtn = {
 		[0, -1, -1, -1, -1, -1, 0],
 		[0, 0, 0, 0, 0, 0, 0]
 	]};
+var importbtn = { 
+	width: 7, 
+	height: 9,
+	colors: ["#3D3D3D", "#009933", "#CC00CC"],
+	pxmap: [
+		[-1, -1, -1, 2, -1, -1, -1],
+		[-1, -1, -1, 2, -1, -1, -1],
+		[-1, -1, -1, 2, -1, -1, -1],
+		[-1, 2, 2, 2, 2, 2, -1],
+		[-1, -1, 2, 2, 2, -1, -1],
+		[0, -1, -1, 2, -1, -1, 0],
+		[0, -1, -1, -1, -1, -1, 0],
+		[0, -1, -1, -1, -1, -1, 0],
+		[0, 0, 0, 0, 0, 0, 0]
+]};
 var newbtn = {
 	width: 7, 
 	height: 9,
@@ -181,7 +196,7 @@ function drawui(){
 	ctx.fillStyle = "#ebebeb";	//bottom toolbar
 	ctx.fillRect(80, canvas.height-80, canvas.width-80, 80);
 		
-	ctx.fillStyle = "#ebebeb";	//Left toolbar
+	ctx.fillStyle = "#ebebeb";	// !Left toolbar
 	ctx.fillRect(0, 0, 80, canvas.height-80);
 		drawSpr(pencil, 25, 20, 3);			//and its tools
 		drawSpr(eraser, 15, 110, 3);
@@ -199,8 +214,12 @@ function drawui(){
 	ctx.fillRect(0, canvas.height-80, 80, 80);
 	drawSpr(colorspick, 80, canvas.height-80, 27);	//color picker
 	
-	ctx.fillStyle = "#ebebeb";	//Right toolbar
+	ctx.fillStyle = "#ebebeb";	// !Right toolbar
 	ctx.fillRect(canvas.width-80, 0, 80, canvas.height-80);
+	
+	drawSpr(newbtn, canvas.width-53, 23, 4);	//draw new btn
+	drawSpr(exportbtn, canvas.width-54, 75, 4);	//draw export btn
+	drawSpr(importbtn, canvas.width-54, 120, 4);//draw import btn
 	
 	ctx.fillStyle = "#000000";	//draw preview 2x
 	ctx.font = "bold 10px sans-serif";
@@ -215,9 +234,6 @@ function drawui(){
 	ctx.fillStyle = "#FFFFFF";
 	ctx.fillRect(canvas.width-77, canvas.height-160, 75, 75);
 	drawSpr(img, canvas.width-77, canvas.height-160, 3);
-	
-	drawSpr(newbtn, canvas.width-53, 23, 4);	//draw new btn
-	drawSpr(exportbtn, canvas.width-54, 75, 4);	//draw export btn
 	
 	ctx.fillStyle = "#666666";	//draw logo
 	ctx.font = "bold 15px 'Press Start 2P',sans-serif";
@@ -314,7 +330,7 @@ function drawPxMap(px){
 
 function detectClickIntent(x, y){
 	if(msmvd == false){
-		if(x<80 && y<320){	//Left toolbar
+		if(x<80 && y<320){	//!Left toolbar
 			if(y<90){
 				currentTool = 0;
 			}
@@ -344,7 +360,7 @@ function detectClickIntent(x, y){
 			renderAll(img);
 			switchColor(x, y);
 		}
-		else if(x>canvas.width-80){	//right toolbar
+		else if(x>canvas.width-80){	//!right toolbar
 			if(y<65){
 				start();
 			}
@@ -353,6 +369,10 @@ function detectClickIntent(x, y){
 				document.getElementById("exports").style.visibility = "visible";
 				document.getElementById("exports").innerHTML = exported;
 			}
+			else if(y>120 && y<156){
+				importImg(prompt("Paste the object with the name 'img'"));
+			}
+			
 		}
 		else if (x>80 && x<canvas.width-80 && y<canvas.height-80){	//grid
 			addPx(x, y);
@@ -378,7 +398,6 @@ canvas.onmousedown = function(){
 canvas.onmouseup = function(){
 	msdwn = false;
 	if(msmvd == true){
-		
 		snapshots.push(JSON.parse(JSON.stringify(img)));
 	}
 }
@@ -427,4 +446,8 @@ function exportImg(eimg){	//Export to a js string object
 	}
 	exported = exported + "pxmap: " + epxmap + "};"
 	return exported;
+}
+function importImg(eimg){
+	eval(eimg);
+	renderAll(img);
 }
