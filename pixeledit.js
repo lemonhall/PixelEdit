@@ -159,15 +159,13 @@ function undo(){
 		if(snapshotsIndex > 0){
 			snapshotsIndex--;
 			img = snapshots[snapshotsIndex];
-			console.log("undid");
 		}
 	renderAll(img);
 }
 function redo(){
 		if(snapshotsIndex < snapshots.length-1){
 			snapshotsIndex++;
-			img = snapshots[snapshotsIndex];
-			console.log("redid");			
+			img = snapshots[snapshotsIndex];		
 		}
 	renderAll(img);
 }
@@ -190,6 +188,7 @@ function drawui(){
 		}
 	drawSpr(undobtn, 20, 170, 4);
 	drawSpr(redobtn, 25, 210, 4);
+	
 	ctx.fillStyle = currentColor;	//bottom corner
 	ctx.fillRect(0, canvas.height-80, 80, 80);
 	drawSpr(colorspick, 80, canvas.height-80, 27);	//color picker
@@ -350,7 +349,7 @@ function detectClickIntent(x, y){
 				document.getElementById("exports").innerHTML = exported;
 			}
 			else if(y>120 && y<156){
-				importImg(prompt("Paste the object with the name 'img'"));
+				importImg(prompt("Paste valid PixelEdit JSON"));
 			}
 			
 		}
@@ -417,7 +416,7 @@ canvas.onmousemove = function(){
 }*/
 
 function exportImg(eimg){	//Export to a js string object
-	var exported = "var img = {<br>";
+	var exported = "{<br>";
 	var ecolors = "[";	//add colors
 	for(var x=0; x<eimg.colors.length; x++){
 		ecolors = ecolors + '"';
@@ -428,7 +427,7 @@ function exportImg(eimg){	//Export to a js string object
 			ecolors = ecolors + eimg.colors[x] + '"]';
 		}
 	}
-	exported = exported + "colors: " + ecolors + ",<br> ";
+	exported = exported + '"colors": ' + ecolors + ",<br> ";
 	var epxmap = "[<br>";
 	for(var y=0; y<eimg.pxmap.length; y++){	//pxmap arr
 		epxmap = epxmap + "[";
@@ -447,10 +446,10 @@ function exportImg(eimg){	//Export to a js string object
 			epxmap = epxmap + "<br>]";	//if finished close pxmap
 		}
 	}
-	exported = exported + "pxmap: " + epxmap + "};"
+	exported = exported + '"pxmap": ' + epxmap + "<br>}"
 	return exported;
 }
 function importImg(eimg){
-	eval(eimg);
+	img = JSON.parse(eimg);
 	renderAll(img);
 }
