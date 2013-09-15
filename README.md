@@ -1,4 +1,5 @@
-![PixelEdit Screenshot](screenshot.png)
+<img src="screenshot.png" alt="PixelEdit Screenshot" style="width: 200px;"/>
+
 
 I created this because I was tired of using pngs in my html5 games.
 
